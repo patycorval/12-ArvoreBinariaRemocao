@@ -150,20 +150,24 @@ NO* criaNO(int valor)
 
 NO* insereArvore(NO* no, int valor)
 {
-	if (no == NULL) // ponto de insercao
-	{
-		return criaNO(valor);
+	if (no->valor > valor && no->esq == NULL) {
+		no->esq = criaNO(valor);
+		return no->esq;
 	}
-	else
-	{
-		if (valor < no->valor) {
-			no->esq = insereArvore(no->esq, valor);
-		}
-		else {
-			no->dir = insereArvore(no->dir, valor);
-		}
-		return no;
+	else if (no->valor < valor && no->dir == NULL) {
+		no->dir = criaNO(valor);
+		return no->dir;
 	}
+	else if (no->valor > valor) {
+		return insereArvore(no->esq, valor);
+	}
+	else if (no->valor < valor) {
+		return insereArvore(no->dir, valor);
+	}
+	else {
+		return NULL;
+	}
+
 
 }
 
@@ -243,11 +247,55 @@ void removerElementoArvore(NO* no, int valor) {
 	}
 
 
-	// caso 1: sem filhos	
-	
+	// caso 1: sem filhos
+	if (atual->esq == NULL && atual->dir == NULL) {
+		if (pai != NULL) {
+			if (atual == pai->esq) {
+				pai->esq = NULL;
+			}
+			else {
+				pai->dir = NULL;
+			}
+		}
+		else {
+			raiz = NULL;
+		}
+		free(atual);
+		return;
+	}
 
-	// caso 2: um filho	
-	
+	// caso 2: um filho
+	if (atual->esq == NULL && atual->dir != NULL) {
+		if (pai != NULL) {
+			if (atual == pai->esq) {
+				pai->esq = atual->dir;
+			}
+			else {
+				pai->dir = atual->dir;
+			}
+		}
+		else {
+			raiz = atual->dir;
+		}
+		free(atual);
+		return;
+	}
+
+	if (atual->esq != NULL && atual->dir == NULL) {
+		if (pai != NULL) {
+			if (atual == pai->esq) {
+				pai->esq = atual->esq;
+			}
+			else {
+				pai->dir = atual->esq;
+			}
+		}
+		else {
+			raiz = atual->esq;
+		}
+		free(atual);
+		return;
+	}
 
 	// caso 3: dois filhos
 
@@ -274,7 +322,6 @@ void removerElementoArvore(NO* no, int valor) {
 
 	//libera memoria
 	free(sucessor);
-
 
 }
 
